@@ -15,17 +15,17 @@ import jakarta.persistence.Id;
  * @author digis
  */
 
-public class Alumno {
+public class AlumnoBL {
    
     private int idalumno;
     private String Nombre;
     private String apellidopaterno;
     private String apellidomaterno;
 
-    public Alumno() {
+    public AlumnoBL() {
     }
 
-    public Alumno(int idalumno) {
+    public AlumnoBL(int idalumno) {
         this.idalumno = idalumno;
     }
 

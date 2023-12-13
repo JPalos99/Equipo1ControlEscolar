@@ -15,16 +15,16 @@ import jakarta.persistence.Id;
  * @author digis
  */
 
-public class Materia {
+public class MateriaBL {
    
     private int idmateria;
     private String nombre;
     private Double costo;
 
-    public Materia() {
+    public MateriaBL() {
     }
 
-    public Materia(int idmateria) {
+    public MateriaBL(int idmateria) {
         this.idmateria = idmateria;
     }
 

@@ -7,10 +7,7 @@ package com.Digis01.Equipo1ControlEscolar.DL;
 import com.Digis01.Equipo1ControlEscolar.ML.Alumno;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-/**
- *
- * @author digis
- */
+
 public interface ServiceAlumno extends JpaRepository<Alumno, Long>{
     
 }

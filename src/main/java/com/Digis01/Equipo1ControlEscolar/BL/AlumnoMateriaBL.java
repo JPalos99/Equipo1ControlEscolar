@@ -17,18 +17,18 @@ import jakarta.persistence.OneToMany;
  * @author digis
  */
 
-public class AlumnoMateria {
+public class AlumnoMateriaBL {
   
     private int idalumnomateria;
     
-    private Alumno alumno;
+    private AlumnoBL alumno;
    
-    private Materia materia;
+    private MateriaBL materia;
 
-    public AlumnoMateria() {
+    public AlumnoMateriaBL() {
     }
 
-    public AlumnoMateria(int idalumnomateria) {
+    public AlumnoMateriaBL(int idalumnomateria) {
         this.idalumnomateria = idalumnomateria;
     }
 
@@ -40,19 +40,19 @@ public class AlumnoMateria {
         this.idalumnomateria = idalumnomateria;
     }
 
-    public Alumno getAlumno() {
+    public AlumnoBL getAlumno() {
         return alumno;
     }
 
-    public void setAlumno(Alumno alumno) {
+    public void setAlumno(AlumnoBL alumno) {
         this.alumno = alumno;
     }
 
-    public Materia getMateria() {
+    public MateriaBL getMateria() {
         return materia;
     }
 
-    public void setMateria(Materia materia) {
+    public void setMateria(MateriaBL materia) {
         this.materia = materia;
     }
     

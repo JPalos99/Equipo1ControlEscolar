@@ -6,11 +6,9 @@ package com.Digis01.Equipo1ControlEscolar.SL;
 
 import com.Digis01.Equipo1ControlEscolar.DL.ServiceAlumno;
 import com.Digis01.Equipo1ControlEscolar.ML.Alumno;
-import com.Digis01.Equipo1ControlEscolar.ML.AlumnoMateria;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.apache.commons.logging.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -35,8 +33,6 @@ public class AlumnoRestController {
     public AlumnoRestController(ServiceAlumno serviceAlumno) {
         this.serviceAlumno = serviceAlumno;
     }
-
-    
 
     @GetMapping("/Listado")
     public ResponseEntity<List<Alumno>> Listado() {

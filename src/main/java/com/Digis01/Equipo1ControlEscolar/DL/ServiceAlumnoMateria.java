@@ -12,5 +12,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * @author digis
  */
 public interface ServiceAlumnoMateria extends JpaRepository<AlumnoMateria, Long> {
-    
+   
 }

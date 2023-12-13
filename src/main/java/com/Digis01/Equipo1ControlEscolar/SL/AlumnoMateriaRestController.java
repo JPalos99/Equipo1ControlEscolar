@@ -4,9 +4,8 @@
  */
 package com.Digis01.Equipo1ControlEscolar.SL;
 
-import com.Digis01.Equipo1ControlEscolar.DL.ServiceMateria;
-
-import com.Digis01.Equipo1ControlEscolar.ML.Materia;
+import com.Digis01.Equipo1ControlEscolar.DL.ServiceAlumnoMateria;
+import com.Digis01.Equipo1ControlEscolar.ML.AlumnoMateria;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -19,53 +18,49 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-/**
- *
- * @author digis
- */
 @RestController
-@RequestMapping("MateriaApi")
-public class MateriaRestController {
-    ServiceMateria serviceMateria;
+@RequestMapping("/AlumnoMateriaApi")
+public class AlumnoMateriaRestController {
 
-    public MateriaRestController(ServiceMateria serviceMateria) {
-        this.serviceMateria = serviceMateria;
+    ServiceAlumnoMateria serviceAlumnoMateria;
+
+    public AlumnoMateriaRestController(ServiceAlumnoMateria serviceAlumnoMateria) {
+        this.serviceAlumnoMateria = serviceAlumnoMateria;
     }
-    
-    
+
     @GetMapping("/Listado")
-    public ResponseEntity<List<Materia>> Listado() {
-        List<Materia> materias = serviceMateria.findAll();
-        if (materias == null) {
+    public ResponseEntity<List<AlumnoMateria>> Listado() {
+        List<AlumnoMateria> alumnosmaterias = serviceAlumnoMateria.findAll();
+        if (alumnosmaterias == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
-            return new ResponseEntity<>(materias, HttpStatus.OK);
+            return new ResponseEntity<>(alumnosmaterias, HttpStatus.OK);
         }
     }
 
     @GetMapping("/Add&Update/{id}")
-    public ResponseEntity<Materia> obtenerAlumnoPorId(@PathVariable Long id) {
-        return serviceMateria.findById(id)
-                .map(materia -> new ResponseEntity<>(materia, HttpStatus.OK))
+    public ResponseEntity<AlumnoMateria> obtenerAlumnoPorId(@PathVariable Long id) {
+        return serviceAlumnoMateria.findById(id)
+                .map(alumno -> new ResponseEntity<>(alumno, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/From")
-    public ResponseEntity<Materia> Form(@RequestBody Materia materia) {
-        if (materia.getIdmateria() == 0) {
-            serviceMateria.save(materia);
-            if (materia == null) {
+    public ResponseEntity<AlumnoMateria> Form(@RequestBody AlumnoMateria alumnoMateria) {
+        if (alumnoMateria.getIdalumnomateria() == 0) {
+            serviceAlumnoMateria.save(alumnoMateria);
+            if (alumnoMateria == null) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(materia, HttpStatus.OK);
+                return new ResponseEntity<>(alumnoMateria, HttpStatus.OK);
             }
         } else {
-            serviceMateria.save(materia);
+            serviceAlumnoMateria.save(alumnoMateria);
 
-            if (materia == null) {
+            if (alumnoMateria == null) {
                 return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
             } else {
-                return new ResponseEntity<>(materia, HttpStatus.OK);
+                return new ResponseEntity<>(alumnoMateria, HttpStatus.OK);
             }
 
         }
@@ -74,9 +69,10 @@ public class MateriaRestController {
     @GetMapping("/elimina/{id}")
     public Map<String, String> Delete(@PathVariable Long id) {
         Map<String, String> map = new HashMap<>();
-        serviceMateria.deleteById(id);
-        String ids=id.toString();
-        map.put("Se elimino la materia con el id: ", ids);
+        serviceAlumnoMateria.deleteById(id);
+        String ids = id.toString();
+        map.put("Se elimino  con el id: ", ids);
         return map;
     }
+
 }
