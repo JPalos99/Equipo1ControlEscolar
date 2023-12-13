@@ -29,7 +29,8 @@ import org.springframework.web.client.RestTemplate;
  */
 @Controller
 @RequestMapping("/AlumnoJPA")
-public class AlumnoController {
+public class AlumnoController {   
+    
     
     @GetMapping("/listado")
     private String listadoPasajeros(Model model) {
@@ -44,7 +45,7 @@ public class AlumnoController {
         );
         List<AlumnoBL> alumnos = response.getBody();
         model.addAttribute("alumnos", alumnos);
-        return "";
+        return "PaginaAlumnos";
     }
     
     @GetMapping("/form/{idAlumno}")
@@ -53,13 +54,13 @@ public class AlumnoController {
         
         if (idAlumno == 0) {
             model.addAttribute("alumno", new AlumnoBL());
-            return "Form";
+            return "FormularioAlumno";
         } else {
             ResponseEntity<AlumnoBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/AlumoApi/Add&Update/" + idAlumno,AlumnoBL.class);
            
              model.addAttribute("alumno", responseEntityAlumno);
         }
-        return "";
+        return "redirect:/AlumnoJPA/listado";
     }
     @PostMapping("form")
     public String Form(@ModelAttribute("alumno") AlumnoBL alumno, Model model) {
@@ -76,7 +77,7 @@ public class AlumnoController {
                 new ParameterizedTypeReference<AlumnoBL>() {
         }
         );
-        return "";
+        return "redirect:/AlumnoJPA/listado";
     }
     
      @GetMapping("/EliminarAlumno/{idAlumno}")
@@ -90,6 +91,6 @@ public class AlumnoController {
                 new ParameterizedTypeReference<AlumnoBL>() {
         }
         );
-        return "";
+        return "redirect:/AlumnoJPA/listado";
     }
 }
