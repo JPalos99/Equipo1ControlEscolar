@@ -39,7 +39,7 @@
         <header>
             <section class="page-section" id="contact">
 
-                <form th:action="@{/AlumnoJPA/form}" method="post" th:object="${alumno}" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
+                <form th:action="@{/AlumnoJPA/form}" method="post" th:object="${materia}" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
                     <div class="container">
                         </br></br>
                         <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Alumnos</h2>
@@ -48,7 +48,6 @@
                             <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
                             <div class="divider-custom-line"></div>
                         </div>
-                        <!-- Name input-->
                         <div class="form-floating mb-3">
                             <input class="form-control" id="name" type="text" placeholder="Enter your name..." data-sb-validations="required" />
                             <label for="name">Nombre</label>

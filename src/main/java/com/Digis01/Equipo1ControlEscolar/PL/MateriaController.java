@@ -42,7 +42,7 @@ public class MateriaController {
         );
         List<MateriaBL> materias = response.getBody();
         model.addAttribute("materias", materias);
-        return "";
+        return "PaginaMaterias";
     }
 
     @GetMapping("/form/{idMateria}")
@@ -51,13 +51,13 @@ public class MateriaController {
 
         if (idMateria == 0) {
             model.addAttribute("materia", new MateriaBL());
-            return "Form";
+            return "FormularioMateria";
         } else {
             ResponseEntity<MateriaBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/MateriaApi/Add&Update/" + idMateria, MateriaBL.class);
 
             model.addAttribute("materia", responseEntityAlumno);
         }
-        return "";
+        return "redirect:/MateriaJPA/listado";
     }
 
     @PostMapping("form")
@@ -75,7 +75,7 @@ public class MateriaController {
                 new ParameterizedTypeReference<MateriaBL>() {
         }
         );
-        return "";
+        return "redirect:/MateriaJPA/listado";
     }
 
     @GetMapping("/EliminarMateria/{idMateria}")
@@ -89,6 +89,6 @@ public class MateriaController {
                 new ParameterizedTypeReference<MateriaBL>() {
         }
         );
-        return "";
+        return "redirect:/MateriaJPA/listado";
     }
 }
