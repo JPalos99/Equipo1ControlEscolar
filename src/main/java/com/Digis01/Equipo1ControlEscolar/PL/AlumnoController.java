@@ -4,7 +4,6 @@
  */
 package com.Digis01.Equipo1ControlEscolar.PL;
 
-
 import com.Digis01.Equipo1ControlEscolar.BL.AlumnoBL;
 
 import java.util.List;
@@ -29,9 +28,22 @@ import org.springframework.web.client.RestTemplate;
  */
 @Controller
 @RequestMapping("/AlumnoJPA")
-public class AlumnoController {   
-    
-    
+public class AlumnoController {  
+
+    @GetMapping("/")
+    private String Home(Model model) {
+        RestTemplate restTemplate = new RestTemplate();
+        String apiUrl = "http://localhost:8080/AlumoApi/";
+        ResponseEntity<String> response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                null,
+                String.class
+        );
+        model.addAttribute("home", response.getBody());
+        return "PaginaInicio";
+    }
+
     @GetMapping("/listado")
     private String listadoPasajeros(Model model) {
         RestTemplate restTemplate = new RestTemplate();
@@ -47,21 +59,22 @@ public class AlumnoController {
         model.addAttribute("alumnos", alumnos);
         return "PaginaAlumnos";
     }
-    
+
     @GetMapping("/form/{idAlumno}")
     public String Form(@PathVariable int idAlumno, Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        
+
         if (idAlumno == 0) {
             model.addAttribute("alumno", new AlumnoBL());
             return "FormularioAlumno";
         } else {
-            ResponseEntity<AlumnoBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/AlumoApi/Add&Update/" + idAlumno,AlumnoBL.class);
-           
-             model.addAttribute("alumno", responseEntityAlumno);
+            ResponseEntity<AlumnoBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/AlumoApi/Add&Update/" + idAlumno, AlumnoBL.class);
+
+            model.addAttribute("alumno", responseEntityAlumno);
         }
         return "redirect:/AlumnoJPA/listado";
     }
+
     @PostMapping("form")
     public String Form(@ModelAttribute("alumno") AlumnoBL alumno, Model model) {
         RestTemplate restTemplate = new RestTemplate();
@@ -79,8 +92,8 @@ public class AlumnoController {
         );
         return "redirect:/AlumnoJPA/listado";
     }
-    
-     @GetMapping("/EliminarAlumno/{idAlumno}")
+
+    @GetMapping("/EliminarAlumno/{idAlumno}")
     public String Delete(@PathVariable int idAlumno) {
         RestTemplate RestTemplate = new RestTemplate();
         String apiUrl = "http://localhost:8080/AlumoApi/elimina/" + idAlumno;

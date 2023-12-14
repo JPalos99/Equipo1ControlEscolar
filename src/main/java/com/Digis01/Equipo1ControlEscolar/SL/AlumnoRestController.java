@@ -33,6 +33,14 @@ public class AlumnoRestController {
     public AlumnoRestController(ServiceAlumno serviceAlumno) {
         this.serviceAlumno = serviceAlumno;
     }
+    
+         
+    @GetMapping("/")
+    public ResponseEntity<String> obtenerDatosDesdeApi() {
+        String data = "PaginaInicio";
+        return ResponseEntity.ok(data);
+    }
+    
 
     @GetMapping("/Listado")
     public ResponseEntity<List<Alumno>> Listado() {
