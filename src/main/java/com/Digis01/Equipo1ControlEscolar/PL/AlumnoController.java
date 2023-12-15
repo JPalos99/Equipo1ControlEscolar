@@ -45,7 +45,7 @@ public class AlumnoController {
     }
 
     @GetMapping("/listado")
-    private String listadoPasajeros(Model model) {
+    private String listado(Model model) {
         RestTemplate restTemplate = new RestTemplate();
         String apiUrl = "http://localhost:8080/AlumoApi/Listado";
         ResponseEntity<List<AlumnoBL>> response = restTemplate.exchange(
@@ -72,7 +72,7 @@ public class AlumnoController {
 
             model.addAttribute("alumno", responseEntityAlumno);
         }
-        return "redirect:/AlumnoJPA/listado";
+        return "FormularioAlumno";
     }
 
     @PostMapping("form")

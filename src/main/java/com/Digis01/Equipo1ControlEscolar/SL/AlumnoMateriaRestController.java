@@ -5,7 +5,7 @@
 package com.Digis01.Equipo1ControlEscolar.SL;
 
 import com.Digis01.Equipo1ControlEscolar.DL.ServiceAlumnoMateria;
-import com.Digis01.Equipo1ControlEscolar.ML.AlumnoMateria;
+import com.Digis01.Equipo1ControlEscolar.ML.alumnomateria;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,8 +29,8 @@ public class AlumnoMateriaRestController {
     }
 
     @GetMapping("/Listado")
-    public ResponseEntity<List<AlumnoMateria>> Listado() {
-        List<AlumnoMateria> alumnosmaterias = serviceAlumnoMateria.findAll();
+    public ResponseEntity<List<alumnomateria>> Listado() {
+        List<alumnomateria> alumnosmaterias = serviceAlumnoMateria.findAll();
         if (alumnosmaterias == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
@@ -39,14 +39,14 @@ public class AlumnoMateriaRestController {
     }
 
     @GetMapping("/Add&Update/{id}")
-    public ResponseEntity<AlumnoMateria> obtenerAlumnoPorId(@PathVariable Long id) {
+    public ResponseEntity<alumnomateria> obtenerAlumnoPorId(@PathVariable Long id) {
         return serviceAlumnoMateria.findById(id)
                 .map(alumno -> new ResponseEntity<>(alumno, HttpStatus.OK))
                 .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
     }
 
     @PostMapping("/From")
-    public ResponseEntity<AlumnoMateria> Form(@RequestBody AlumnoMateria alumnoMateria) {
+    public ResponseEntity<alumnomateria> Form(@RequestBody alumnomateria alumnoMateria) {
         if (alumnoMateria.getIdalumnomateria() == 0) {
             serviceAlumnoMateria.save(alumnoMateria);
             if (alumnoMateria == null) {

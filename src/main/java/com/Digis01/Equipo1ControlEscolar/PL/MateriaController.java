@@ -30,7 +30,7 @@ import org.springframework.web.client.RestTemplate;
 public class MateriaController {
 
     @GetMapping("/listado")
-    private String listadoPasajeros(Model model) {
+    private String listado(Model model) {
         RestTemplate restTemplate = new RestTemplate();
         String apiUrl = "http://localhost:8080/MateriaApi/Listado";
         ResponseEntity<List<MateriaBL>> response = restTemplate.exchange(

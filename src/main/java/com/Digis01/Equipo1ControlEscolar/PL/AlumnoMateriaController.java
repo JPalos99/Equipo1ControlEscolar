@@ -29,7 +29,7 @@ public class AlumnoMateriaController {
     
     
     @GetMapping("/listado")
-    private String listadoPasajeros(Model model) {
+    private String listado(Model model) {
         RestTemplate restTemplate = new RestTemplate();
         String apiUrl = "http://localhost:8080/AlumnoMateriaApi/Listado";
         ResponseEntity<List<AlumnoMateriaBL>> response = restTemplate.exchange(
@@ -41,7 +41,7 @@ public class AlumnoMateriaController {
         );
         List<AlumnoMateriaBL> alumnomaterias = response.getBody();
         model.addAttribute("alumnomaterias", alumnomaterias);
-        return "";
+        return "PaginaAlumnoMateria";
     }
 
     @GetMapping("/form/{idAlumnoMateria}")
@@ -50,7 +50,7 @@ public class AlumnoMateriaController {
 
         if (idAlumnoMateria == 0) {
             model.addAttribute("alumnomateria", new AlumnoMateriaBL());
-            return "Form";
+            return "PaginaAlumnoMateria";
         } else {
             ResponseEntity<AlumnoMateriaBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/AlumnoMateriaApi/Add&Update/" + idAlumnoMateria, AlumnoMateriaBL.class);
 
@@ -88,6 +88,6 @@ public class AlumnoMateriaController {
                 new ParameterizedTypeReference<AlumnoMateriaBL>() {
         }
         );
-        return "";
+        return "redirect:/AlumnoMateriaJPA/listado";
     }
 }
