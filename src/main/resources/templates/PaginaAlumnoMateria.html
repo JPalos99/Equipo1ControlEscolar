@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layaout"
+      layout:decorate="~{layout}"> 
+    <body layout:fragment="body">
+        <header>
+            <section class="page-section" id="contact">
+                <div class="container">
+                    </br></br>
+                    <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Materias del Alumno</h2>
+                    <div class="divider-custom">
+                        <div class="divider-custom-line"></div>
+                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                        <div class="divider-custom-line"></div>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a class="btn btn-primary"><i class="bi bi-plus-circle"></i>  Agregar</a>
+                    </div></br>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 col-xl-7">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ELIMINAR</th>
+                                        <th scope="col">ID ALUMNO</th>
+                                        <th scope="col">NOMBRE DE ALUMNO</th>
+                                        <th scope="col">ID MATERIA</th>
+                                        <th scope="col">NOMBRE DE MATERIA</th>
+                                        <th scope="col">EDITAR</th>
+                                    </tr>
+                                </thead>
+                                <tbody> 
+                                    <tr th:each="alumnomateria : ${alumnomaterias}">
+                                        <td>
+                                            <a th:href="@{/AlumnoMateriaJPA/EliminarMateria/{idalumnomateria}(idalumnomateria=${alumnomateria.idalumnomateria})}" class="btn btn-danger">
+                                                <i class="bi bi-trash3"></i>                           
+                                        </td>
+                                        <td th:text="${alumnomateria.alumno.idalumno}"></td>
+                                        <td th:text="${alumnomateria.alumno.nombre}"></td>
+                                        <td th:text="${alumnomateria.materia.idmateria}"></td>
+                                        <td th:text="${alumnomateria.materia.nombre}"></td>                                     
+                                        <td>
+                                            <a class="btn btn-warning">
+                                                <i class="bi bi-pencil-square"></i>                                
+                                        </td>
+                                    </tr>  
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </header> 
+    </body>    
+</html>
