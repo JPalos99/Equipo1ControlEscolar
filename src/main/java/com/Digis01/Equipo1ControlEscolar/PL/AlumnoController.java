@@ -4,10 +4,12 @@
  */
 package com.Digis01.Equipo1ControlEscolar.PL;
 
-
 import com.Digis01.Equipo1ControlEscolar.BL.AlumnoBL;
+import com.Digis01.Equipo1ControlEscolar.BL.MateriaBL;
+import com.Digis01.Equipo1ControlEscolar.ML.Alumno;
 
 import java.util.List;
+import java.util.Optional;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -29,9 +31,13 @@ import org.springframework.web.client.RestTemplate;
  */
 @Controller
 @RequestMapping("/AlumnoJPA")
-public class AlumnoController {   
-    
-    
+public class AlumnoController {
+
+    @GetMapping("/Inicio")
+    public String inicio(){
+    return"PaginaInicio";
+            
+    }
     @GetMapping("/listado")
     private String listadoPasajeros(Model model) {
         RestTemplate restTemplate = new RestTemplate();
@@ -45,42 +51,62 @@ public class AlumnoController {
         );
         List<AlumnoBL> alumnos = response.getBody();
         model.addAttribute("alumnos", alumnos);
+        ResponseEntity<List<MateriaBL>> responseMateria = restTemplate.exchange(
+                "http://localhost:8080/MateriaApi/Listado",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<MateriaBL>>() {
+        }
+        );
+        List<MateriaBL> materias = responseMateria.getBody();
+        model.addAttribute("materias", materias);
+        model.addAttribute("materia", new MateriaBL());
         return "PaginaAlumnos";
     }
-    
-    @GetMapping("/form/{idAlumno}")
-    public String Form(@PathVariable int idAlumno, Model model) {
+
+    @GetMapping("/form/{idalumno}")
+    public String Form(@PathVariable int idalumno, Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        
-        if (idAlumno == 0) {
-            model.addAttribute("alumno", new AlumnoBL());
+
+        if (idalumno == 0) {
+            model.addAttribute("alumno", new Alumno());
             return "FormularioAlumno";
         } else {
-            ResponseEntity<AlumnoBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/AlumoApi/Add&Update/" + idAlumno,AlumnoBL.class);
-           
-             model.addAttribute("alumno", responseEntityAlumno);
+
+            String apiUrl = "http://localhost:8080/AlumoApi/Add&Update/" + idalumno;
+            ResponseEntity<Optional<Alumno>> response = restTemplate.exchange(
+                    apiUrl,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Optional<Alumno>>() {
+            }
+            );
+            Optional<Alumno> alumno = response.getBody();
+            Alumno alumnos = alumno.get();
+            model.addAttribute("alumno", alumnos);
         }
-        return "redirect:/AlumnoJPA/listado";
+        return "FormularioAlumno";
     }
-    @PostMapping("form")
-    public String Form(@ModelAttribute("alumno") AlumnoBL alumno, Model model) {
+
+    @PostMapping("/form")
+    public String Form(@ModelAttribute("alumno") Alumno alumno, Model model) {
         RestTemplate restTemplate = new RestTemplate();
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
         String apiUrl = "http://localhost:8080/AlumoApi/From";
-        HttpEntity<AlumnoBL> request
-                = new HttpEntity<AlumnoBL>(alumno, headers);
-        ResponseEntity<AlumnoBL> response = restTemplate.exchange(
+        HttpEntity<Alumno> request
+                = new HttpEntity<Alumno>(alumno, headers);
+        ResponseEntity<Alumno> response = restTemplate.exchange(
                 apiUrl,
                 HttpMethod.POST,
                 request,
-                new ParameterizedTypeReference<AlumnoBL>() {
+                new ParameterizedTypeReference<Alumno>() {
         }
         );
         return "redirect:/AlumnoJPA/listado";
     }
-    
-     @GetMapping("/EliminarAlumno/{idAlumno}")
+
+    @GetMapping("/EliminarAlumno/{idAlumno}")
     public String Delete(@PathVariable int idAlumno) {
         RestTemplate RestTemplate = new RestTemplate();
         String apiUrl = "http://localhost:8080/AlumoApi/elimina/" + idAlumno;

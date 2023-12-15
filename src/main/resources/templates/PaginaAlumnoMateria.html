@@ -17,11 +17,14 @@
         <link href="/imagen/estilos/styles.css" rel="stylesheet" />
         <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.css" />  
         <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/js/bootstrap.bundle.min.js"></script>
+        <script src="js/scripts.js"></script>
     </head>
     <body id="page-top">
         <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand" href="/3">Control Escolar </a>
+                <a class="navbar-brand" href="/AlumnoMateriaJPA/listado">Control Escolar </a>
                 <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
@@ -31,7 +34,6 @@
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/AlumnoJPA/listado">Alumnos</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/MateriaJPA/listado">Materias</a></li>
                         <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/AlumnoJPA/Inicio">Home</a></li>
-
                         </br>
                     </ul>
                 </div>
@@ -41,16 +43,13 @@
             <section class="page-section" id="contact">
                 <div class="container">
                     </br></br>
-                    <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Alumnos</h2>
+                    <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Materias del Alumno</h2>
                     <div class="divider-custom">
                         <div class="divider-custom-line"></div>
                         <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
                         <div class="divider-custom-line"></div>
                     </div>
-                    <div class="text-center mt-4">
 
-                        <a  th:href="@{/AlumnoJPA/form/{idalumno}(idalumno=${0})}" class="btn btn-success">Agregar</a>
-                    </div></br>
                     <div class="row justify-content-center">
                         <div class="col-lg-8 col-xl-7">
                             <table class="table">
@@ -58,33 +57,30 @@
                                     <tr>
                                         <th scope="col">ELIMINAR</th>
                                         <th scope="col">ID ALUMNO</th>
-                                        <th scope="col">NOMBRE</th>
-                                        <th scope="col">APELLIDO PATERNO</th>
-                                        <th scope="col">APELLIDO MATERNO</th>
+                                        <th scope="col">NOMBRE DE ALUMNO</th>
+                                        <th scope="col">ID MATERIA</th>
+                                        <th scope="col">NOMBRE DE MATERIA</th>
                                         <th scope="col">EDITAR</th>
-                                        <th scope="col">AgregarMateria</th>
                                     </tr>
                                 </thead>
-                                <tbody>
-                                    <tr th:each="alumno : ${alumnos}">
+                                <tbody> 
+                                    <tr th:each="alumnomateria : ${alumnomaterias}">
                                         <td>
-                                            <a th:href="@{/AlumnoJPA/EliminarAlumno/{idalumno}(idalumno=${alumno.idalumno})}" class="btn btn-danger">
+                                            <a th:href="@{/AlumnoMateriaJPA/EliminarMateria/{idalumnomateria}(idalumnomateria=${alumnomateria.idalumnomateria})}" class="btn btn-danger">
                                                 <i class="bi bi-trash3"></i>                           
                                         </td>
-                                        <td th:text="${alumno.idalumno}"></td>
-                                        <td th:text="${alumno.nombre}"></td>
-                                        <td th:text="${alumno.apellidopaterno}"></td>                                        
-                                        <td th:text="${alumno.apellidomaterno}"></td>                                        
+                                        <td th:text="${alumnomateria.alumno.idalumno}"></td>
+                                        <td th:text="${alumnomateria.alumno.nombre}"></td>
+                                        <td th:text="${alumnomateria.materia.idmateria}"></td>
+                                        <td th:text="${alumnomateria.materia.nombre}"></td>                                     
+
                                         <td>
-                                            <a th:href="@{/AlumnoJPA/form/{idalumno}(idalumno=${alumno.idalumno})}" class="btn btn-warning">
-                                                <i class="bi bi-pencil-square"></i>                                
+                                            <a  class="btn btn-warning"
+                                                th:attr="onclick='mostrarModalReserva(\'__${alumnomateria.idalumnomateria}__\')'"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModalCenter"> <i class="bi bi-pencil-square"></i></a>
+
                                         </td>
-                                        <td>
-                                            <a href="#" class="btn btn-success"
-                                               th:attr="onclick='mostrarModalReserva(\'__${alumno.idalumno}__\')'"
-                                               data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Materia</a>
-                                        </td>
-                                    </tr>    
+                                    </tr>  
                                 </tbody>
                             </table>
                         </div>
@@ -94,42 +90,54 @@
                     <div class="modal-dialog modal-dialog-centered" role="document">
                         <div class="modal-content">
                             <div class="modal-header">
-                                <h5 class="modal-title" id="exampleModalLongTitle">Agregar Materia</h5>
+                                <h5 class="modal-title" id="exampleModalLongTitle">Modificar</h5>
                                 <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
                                     <span aria-hidden="true">&times;</span>
                                 </button>
                             </div>
                             <div class="modal-body" id="modalContent">
-                                <p><strong>Id del Alumno:</strong> <span id="idalumno"></span></p>
+                                <p><strong>Id del Alumno-Materia:</strong> <span id="idalumnomateria"></span></p>
 
-
-                                <div class="input-group mb-3"> 
+                                <div class="input-group mb-3">
                                     <span class="input-group-text" id="basic-addon1"><i class="bi bi-journal-bookmark-fill"></i></span>
-                                    <select th:if="${materias == null}" class="form-select" aria-label="Default select example" name="Materia" id="idmateria" th:field="*{materia.idmateria}">
+                                    <!-- Dropdown de Materias -->
+                                    <select th:if="${materias == null}" class="form-select" aria-label="Default select example" name="Materia" id="idmateria">
                                         <option value="0">Seleccione una materia</option>
                                     </select>
-                                    <select th:unless="${materias == null}" class="form-select" aria-label="Default select example" name="Materia" id="idmateria" th:field="*{materia.idmateria}">
+                                    <select th:unless="${materias == null}" class="form-select" aria-label="Default select example" name="Materia" id="idmateria">
                                         <option th:each="materia : ${materias}" th:value="${materia.idmateria}" th:text="${materia.nombre}"></option>
                                     </select>
-
                                 </div>
+                                <div class="input-group mb-3">
+                                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                    <!-- Dropdown de Alumnos -->
+                                    <select th:if="${alumnos == null}" class="form-select" aria-label="Default select example" name="Alumno" id="idalumno">
+                                        <option value="0">Seleccione un Alumno</option>
+                                    </select>
+                                    <select th:unless="${alumnos == null}" class="form-select" aria-label="Default select example" name="Alumno" id="idalumno">
+                                        <option th:each="alumno : ${alumnos}" th:value="${alumno.idalumno}" th:text="${alumno.nombre}"></option>
+                                    </select>
+                                </div>
+
+
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
-                                <button id="idAgregar" class="btn btn-primary" onclick="reservarVuelo()">Registrar</button>
+                                <button id="idAgregar" class="btn btn-primary" onclick="reservarVuelo()">Actualizar</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </section>
         </header>        
-        <!-- Footer-->
+        Footer
         <footer class="footer text-center">
             <div class="container">
                 <div class="row">
-                    <!-- Footer Location-->
+
                     <div class="col-lg-4 mb-5 mb-lg-0">
-                        <h4 class="text-uppercase mb-4">Ubicación</h4>
+                        <h4 class="text-uppercase mb-4">Ubicacion</h4>
                         <p class="lead mb-0">
                             Reforma 199
                             <br />
@@ -160,16 +168,18 @@
 <script>
 
                                     function mostrarModalReserva(numeroVuelo) {
-                                        $("#idalumno").text(numeroVuelo);
-
+                                        $("#idalumnomateria").text(numeroVuelo);
                                         $("#exampleModalCenter").modal('show');
                                     }
 
 
+
                                     function reservarVuelo() {
-                                        var idalumno = $("#idalumno").text();
-                                        var idmateria = $("#idmateria").val();
+                                        var idalumnomateria = $("#idalumnomateria").text();
+                                        var idmateria = $("#idmateria").val();  // Actualizado
+                                        var idalumno = $("#idalumno").val();  // Actualizado
                                         var reservacionvuelo = {
+                                            idalumnomateria: idalumnomateria,
                                             alumno: {
                                                 idalumno: idalumno
                                             },

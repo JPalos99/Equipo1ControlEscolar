@@ -41,6 +41,7 @@
 
                 <form th:action="@{/MateriaJPA/form}" method="post" th:object="${materia}" enctype="multipart/form-data" id="contactForm" data-sb-form-api-token="API_TOKEN">
                     <div class="container">
+                          <input type="hidden" th:field="*{idmateria}">
                         </br></br>
                         <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Materias</h2>
                         <div class="divider-custom">
@@ -48,14 +49,14 @@
                             <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
                             <div class="divider-custom-line"></div>
                         </div>
-                        <!-- Name input-->
+                        
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="name" type="text" placeholder="Enter your name..." data-sb-validations="required" />
+                            <input class="form-control" id="name" type="text" placeholder="Enter your name..." data-sb-validations="required" th:field="*{nombre}"/>
                             <label for="name">Nombre</label>
                             <div class="invalid-feedback" data-sb-feedback="name:required">Por favor ingresa el dato.</div>
                         </div>
                         <div class="form-floating mb-3">
-                            <input class="form-control" id="costo" type="costo" placeholder="Ingresa tu apellido paterno" data-sb-validations="required" />
+                            <input class="form-control" id="costo" type="text" placeholder="Ingresa tu apellido paterno" data-sb-validations="required" th:field="*{costo}" />
                             <label for="costo">Costo</label>
                             <div class="invalid-feedback" data-sb-feedback="costo:required">Por favor ingresa el dato.</div>
                         </div>                                     
@@ -66,12 +67,12 @@
                             </div>
                         </div>                        
                         <div class="d-none" id="submitErrorMessage"><div class="text-center text-danger mb-3">Error sending message!</div></div>
-                        <button class="btn btn-primary btn-xl disabled" id="submitButton" type="submit">Guardar</button>
+                         <input type="submit" value="Guardar" class="btn btn-success" />
                     </div>
                 </form>
             </section>
         </header>        
-        <!-- Footer-->
+        
         <footer class="footer text-center">
             <div class="container">
                 <div class="row">

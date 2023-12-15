@@ -9,6 +9,7 @@ import com.Digis01.Equipo1ControlEscolar.ML.Alumno;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlumnoRestController {
 
     ServiceAlumno serviceAlumno;
-    
+
     @Autowired
     public AlumnoRestController(ServiceAlumno serviceAlumno) {
         this.serviceAlumno = serviceAlumno;
@@ -45,10 +46,16 @@ public class AlumnoRestController {
     }
 
     @GetMapping("/Add&Update/{id}")
-    public ResponseEntity<Alumno> obtenerAlumnoPorId(@PathVariable Long id) {
-        return serviceAlumno.findById(id)
-                .map(alumno -> new ResponseEntity<>(alumno, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Optional> obtenerAlumnoPorId(@PathVariable Long id) {
+        Optional<Alumno> alumno = serviceAlumno.findById(id);
+
+        if (!alumno.isPresent()) {
+            
+            alumno = Optional.empty();
+            return new ResponseEntity<>(alumno, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(alumno, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/From")
@@ -76,9 +83,19 @@ public class AlumnoRestController {
     public Map<String, String> Delete(@PathVariable Long id) {
         Map<String, String> map = new HashMap<>();
         serviceAlumno.deleteById(id);
-        String ids=id.toString();
+        String ids = id.toString();
         map.put("Se elimino el  alumno con el id: ", ids);
         return map;
+    }
+
+    @GetMapping("/ListadoStored")
+    public ResponseEntity<List<Alumno>> getAllAlumnos() {
+        List<Alumno> alumnos = serviceAlumno.getAllAlumnos();
+        if (alumnos == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(alumnos, HttpStatus.OK);
+        }
     }
 
 }

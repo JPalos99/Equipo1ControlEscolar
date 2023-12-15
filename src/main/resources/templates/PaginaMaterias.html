@@ -21,16 +21,17 @@
     <body id="page-top">
         <nav class="navbar navbar-expand-lg bg-secondary text-uppercase fixed-top" id="mainNav">
             <div class="container">
-                <a class="navbar-brand" href="/3">Control Escolar </a>
+                <a class="navbar-brand" href="/AlumnoMateriaJPA/listado">Control Escolar </a>
                 <button class="navbar-toggler text-uppercase font-weight-bold bg-primary text-white rounded" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
                     Menu
                     <i class="fas fa-bars"></i>
                 </button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ms-auto">
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#">Alumnos</a></li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#">Materias</a></li>
-                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="#">*</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/AlumnoJPA/listado">Alumnos</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/MateriaJPA/listado">Materias</a></li>
+                        <li class="nav-item mx-0 mx-lg-1"><a class="nav-link py-3 px-0 px-lg-3 rounded" href="/AlumnoJPA/Inicio">Home</a></li>
+
                         </br>
                     </ul>
                 </div>
@@ -47,10 +48,8 @@
                         <div class="divider-custom-line"></div>
                     </div>
                     <div class="text-center mt-4">
-                        <button th:href="@{/MateriaJPA/form/{idMateria}(idMateria=0)}" class="btn btn-primary" data-bs-dismiss="modal">
-                            <i class="bi bi-plus-circle"></i>
-                            Agregar 
-                        </button>
+
+                        <a  th:href="@{/MateriaJPA/form/{idMateria}(idMateria=0)}" class="btn btn-success">Agregar</a>
                     </div></br>
                     <div class="row justify-content-center">
                         <div class="col-lg-8 col-xl-7">
@@ -62,6 +61,7 @@
                                         <th scope="col">NOMBRE</th>
                                         <th scope="col">COSTO</th>
                                         <th scope="col">EDITAR</th>
+                                        <th scope="col">AgregarAlumno </th>
                                     </tr>
                                 </thead>
                                 <tbody> 
@@ -77,9 +77,45 @@
                                             <a th:href="@{/MateriaJPA/form/{idmateria}(idmateria=${materia.idmateria})}" class="btn btn-warning">
                                                 <i class="bi bi-pencil-square"></i>                                
                                         </td>
+                                        <td>
+                                            <a href="#" class="btn btn-success"
+                                               th:attr="onclick='mostrarModalReserva(\'__${materia.idmateria}__\')'"
+                                               data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Alumno</a>
+                                        </td>
                                     </tr>   
                                 </tbody>
                             </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Agregar Alumno</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modalContent">
+                                <p><strong>Id del Materia</strong> <span id="idmateria"></span></p>
+                                
+
+                                <div class="input-group mb-3"> 
+                                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                    <select th:if="${alumnos == null}" class="form-select" aria-label="Default select example" name="Alumno" id="idalumno" th:field="*{alumno.idalumno}">
+                                        <option value="0">Seleccione un Alumno</option>
+                                    </select>
+                                    <select th:unless="${alumnos == null}" class="form-select" aria-label="Default select example" name="Alumno" id="idalumno" th:field="*{alumno.idalumno}">
+                                        <option th:each="alumno : ${alumnos}" th:value="${alumno.idalumno}" th:text="${alumno.nombre}"></option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button id="idAgregar" class="btn btn-primary" onclick="reservarVuelo()">Registrar</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -119,3 +155,47 @@
         <script src="https://cdn.startbootstrap.com/sb-forms-latest.js"></script>
     </body>
 </html>
+
+<script>
+
+                                    function mostrarModalReserva(numeroVuelo) {
+                                        $("#idmateria").text(numeroVuelo);
+                                        
+                                        $("#exampleModalCenter").modal('show');
+                                    }
+
+
+                                    function reservarVuelo() {
+                                        var  idmateria= $("#idmateria").text();
+                                        var idalumno = $("#idalumno").val();
+                                        var reservacionvuelo = {
+                                            alumno: {
+                                                idalumno: idalumno
+                                            },
+                                            materia: {
+                                                idmateria: idmateria
+                                            }
+                                        };
+                                        $.ajax({
+                                            url: "http://localhost:8080/AlumnoMateriaApi/From",
+                                            type: "POST",
+                                            contentType: "application/json",
+                                            dataType: "json",
+                                            data: JSON.stringify(reservacionvuelo),
+                                            success: function (data, textStatus, xhr) {
+                                                if (xhr.status === 200) {
+                                                    alert(' Registro Exitoso: ' + data.mensaje);
+                                                } else {
+                                                    alert('Error en el registro ' + data.mensaje);
+                                                }
+                                                // Recargar la página
+                                                location.reload();
+                                            },
+                                            error: function (error) {
+                                                alert('Error en el registro: ' + error.responseText);
+                                                // Recargar la página
+                                                location.reload();
+                                            }
+                                        });
+                                    }
+</script>

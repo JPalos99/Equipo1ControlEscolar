@@ -4,8 +4,10 @@
  */
 package com.Digis01.Equipo1ControlEscolar.PL;
 
+import com.Digis01.Equipo1ControlEscolar.BL.AlumnoBL;
 import com.Digis01.Equipo1ControlEscolar.BL.MateriaBL;
 import java.util.List;
+import java.util.Optional;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -42,6 +44,16 @@ public class MateriaController {
         );
         List<MateriaBL> materias = response.getBody();
         model.addAttribute("materias", materias);
+        ResponseEntity<List<AlumnoBL>> responseAlumno = restTemplate.exchange(
+                "http://localhost:8080/AlumoApi/Listado",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<AlumnoBL>>() {
+        }
+        );
+        List<AlumnoBL> alumnos = responseAlumno.getBody();
+        model.addAttribute("alumnos", alumnos);
+        model.addAttribute("alumno", new AlumnoBL());
         return "PaginaMaterias";
     }
 
@@ -53,11 +65,21 @@ public class MateriaController {
             model.addAttribute("materia", new MateriaBL());
             return "FormularioMateria";
         } else {
-            ResponseEntity<MateriaBL> responseEntityAlumno = restTemplate.getForEntity("http://localhost:8080/MateriaApi/Add&Update/" + idMateria, MateriaBL.class);
-
-            model.addAttribute("materia", responseEntityAlumno);
+           
+           String apiUrl =  "http://localhost:8080/MateriaApi/Add&Update/" + idMateria;
+            ResponseEntity<Optional<MateriaBL>> response = restTemplate.exchange(
+                    apiUrl,
+                    HttpMethod.GET,
+                    null,
+                    new ParameterizedTypeReference<Optional<MateriaBL>>() {
+            }
+            );
+            Optional<MateriaBL> materia = response.getBody();
+            MateriaBL materias = materia.get();
+            model.addAttribute("materia", materias);
         }
-        return "redirect:/MateriaJPA/listado";
+        return "FormularioMateria";
+
     }
 
     @PostMapping("form")

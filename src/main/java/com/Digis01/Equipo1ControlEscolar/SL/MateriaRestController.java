@@ -10,6 +10,7 @@ import com.Digis01.Equipo1ControlEscolar.ML.Materia;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -44,10 +45,16 @@ public class MateriaRestController {
     }
 
     @GetMapping("/Add&Update/{id}")
-    public ResponseEntity<Materia> obtenerAlumnoPorId(@PathVariable Long id) {
-        return serviceMateria.findById(id)
-                .map(materia -> new ResponseEntity<>(materia, HttpStatus.OK))
-                .orElse(new ResponseEntity<>(HttpStatus.NOT_FOUND));
+    public ResponseEntity<Optional> obtenerAlumnoPorId(@PathVariable Long id) {
+         Optional<Materia> materia = serviceMateria.findById(id);
+
+        if (!materia.isPresent()) {
+            
+            materia = Optional.empty();
+            return new ResponseEntity<>(materia, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(materia, HttpStatus.OK);
+        }
     }
 
     @PostMapping("/From")
