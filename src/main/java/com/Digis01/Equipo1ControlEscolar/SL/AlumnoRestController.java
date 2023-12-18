@@ -4,8 +4,10 @@
  */
 package com.Digis01.Equipo1ControlEscolar.SL;
 
+import com.Digis01.Equipo1ControlEscolar.DL.AlumnoService;
 import com.Digis01.Equipo1ControlEscolar.DL.ServiceAlumno;
 import com.Digis01.Equipo1ControlEscolar.ML.Alumno;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -29,10 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 public class AlumnoRestController {
 
     ServiceAlumno serviceAlumno;
+    AlumnoService alumnoService;
 
     @Autowired
-    public AlumnoRestController(ServiceAlumno serviceAlumno) {
+    public AlumnoRestController(ServiceAlumno serviceAlumno, AlumnoService alumnoService) {
         this.serviceAlumno = serviceAlumno;
+        this.alumnoService = alumnoService;
     }
 
     @GetMapping("/Listado")
@@ -48,9 +52,8 @@ public class AlumnoRestController {
     @GetMapping("/Add&Update/{id}")
     public ResponseEntity<Optional> obtenerAlumnoPorId(@PathVariable Long id) {
         Optional<Alumno> alumno = serviceAlumno.findById(id);
-
         if (!alumno.isPresent()) {
-            
+
             alumno = Optional.empty();
             return new ResponseEntity<>(alumno, HttpStatus.OK);
         } else {
@@ -87,10 +90,26 @@ public class AlumnoRestController {
         map.put("Se elimino el  alumno con el id: ", ids);
         return map;
     }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
-    @GetMapping("/ListadoStored")
-    public ResponseEntity<List<Alumno>> getAllAlumnos() {
-        List<Alumno> alumnos = serviceAlumno.getAllAlumnos();
+    @PostMapping("/AgregarSP")
+    public void agregarAlumno(@RequestBody Alumno alumno) {
+        int idalumno = alumno.getIdalumno();
+        String nombre = alumno.getNombre();
+        String apellidopaterno = alumno.getApellidopaterno();
+        String apellidomaterno = alumno.getApellidomaterno();
+        if (idalumno == 0) {
+            alumnoService.agregar(nombre, apellidopaterno, apellidomaterno);
+           
+        } else {
+            alumnoService.actualizar(idalumno, nombre, apellidopaterno, apellidomaterno);
+            
+        }
+    }
+
+    @GetMapping("/ListadoSP")
+    public ResponseEntity<List<Alumno>> ListadoSP() {
+        List<Alumno> alumnos = serviceAlumno.findAll();
         if (alumnos == null) {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
@@ -98,4 +117,9 @@ public class AlumnoRestController {
         }
     }
 
+    @GetMapping("/eliminaSP/{id}")
+    public void DeleteSP(@PathVariable int id) {
+        alumnoService.eliminar(id);
+      
+    }
 }

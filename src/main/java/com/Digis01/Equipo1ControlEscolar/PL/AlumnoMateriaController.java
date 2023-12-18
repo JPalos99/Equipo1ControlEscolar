@@ -31,7 +31,7 @@ public class AlumnoMateriaController {
     @GetMapping("/listado")
     private String listadoPasajeros(Model model) {
         RestTemplate restTemplate = new RestTemplate();
-        
+
         String apiUrl = "http://localhost:8080/AlumnoMateriaApi/Listado";
         ResponseEntity<List<AlumnoMateria>> response = restTemplate.exchange(
                 apiUrl,
@@ -41,8 +41,8 @@ public class AlumnoMateriaController {
         }
         );
         List<AlumnoMateria> alumnomaterias = response.getBody();
-       model.addAttribute("alumnomaterias", alumnomaterias);
-       
+        model.addAttribute("alumnomaterias", alumnomaterias);
+
         String apiUrlAlumno = "http://localhost:8080/AlumoApi/Listado";
         ResponseEntity<List<AlumnoBL>> responseAlumo = restTemplate.exchange(
                 apiUrlAlumno,
@@ -53,8 +53,7 @@ public class AlumnoMateriaController {
         );
         List<AlumnoBL> alumnos = responseAlumo.getBody();
         model.addAttribute("alumnos", alumnos);
-        
-        
+
         ResponseEntity<List<MateriaBL>> responseMateria = restTemplate.exchange(
                 "http://localhost:8080/MateriaApi/Listado",
                 HttpMethod.GET,
@@ -65,8 +64,7 @@ public class AlumnoMateriaController {
         List<MateriaBL> materias = responseMateria.getBody();
         model.addAttribute("materias", materias);
         model.addAttribute("materia", new MateriaBL());
-       
-       
+
         return "PaginaAlumnoMateria";
     }
 
@@ -85,8 +83,6 @@ public class AlumnoMateriaController {
         return "";
     }
 
-    
-
     @GetMapping("/EliminarMateria/{idalumnomateria}")
     public String Delete(@PathVariable int idalumnomateria) {
         RestTemplate RestTemplate = new RestTemplate();
@@ -98,6 +94,63 @@ public class AlumnoMateriaController {
                 new ParameterizedTypeReference<AlumnoMateriaBL>() {
         }
         );
-        return  "redirect:/AlumnoMateriaJPA/listado";
+        return "redirect:/AlumnoMateriaJPA/listado";
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    @GetMapping("/listadoSP")
+    private String listadoSP(Model model) {
+        RestTemplate restTemplate = new RestTemplate();
+
+        String apiUrl = "http://localhost:8080/AlumnoMateriaApi/ListadoSP";
+        ResponseEntity<List<AlumnoMateria>> response = restTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<AlumnoMateria>>() {
+        }
+        );
+        List<AlumnoMateria> alumnomaterias = response.getBody();
+        model.addAttribute("alumnomaterias", alumnomaterias);
+
+        String apiUrlAlumno = "http://localhost:8080/AlumoApi/ListadoSP";
+        ResponseEntity<List<AlumnoBL>> responseAlumo = restTemplate.exchange(
+                apiUrlAlumno,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<AlumnoBL>>() {
+        }
+        );
+        List<AlumnoBL> alumnos = responseAlumo.getBody();
+        model.addAttribute("alumnos", alumnos);
+
+        ResponseEntity<List<MateriaBL>> responseMateria = restTemplate.exchange(
+                "http://localhost:8080/MateriaApi/ListadoSP",
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<List<MateriaBL>>() {
+        }
+        );
+        List<MateriaBL> materias = responseMateria.getBody();
+        model.addAttribute("materias", materias);
+        model.addAttribute("materia", new MateriaBL());
+
+        return "PaginaAlumnoMateriaSP";
+    }
+
+    
+    @GetMapping("/EliminarMateriaSP/{idalumnomateria}")
+    public String DeleteSP(@PathVariable int idalumnomateria) {
+        RestTemplate RestTemplate = new RestTemplate();
+        String apiUrl = "http://localhost:8080/AlumnoMateriaApi/eliminaSP/" + idalumnomateria;
+        ResponseEntity<AlumnoMateriaBL> response = RestTemplate.exchange(
+                apiUrl,
+                HttpMethod.GET,
+                null,
+                new ParameterizedTypeReference<AlumnoMateriaBL>() {
+        }
+        );
+        return "redirect:/AlumnoMateriaJPA/listadoSP";
+    }
+
 }

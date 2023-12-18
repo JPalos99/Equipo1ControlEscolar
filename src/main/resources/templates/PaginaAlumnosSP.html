@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layaout"
+      layout:decorate="~{layout2}"> 
+    <body layout:fragment="body">
+        <header>
+            <section class="page-section" id="contact">
+                <div class="container">
+                    </br></br>
+                    <h2 class="page-section-heading text-center text-uppercase text-secondary mb-0">Alumnos SP</h2>
+                    <div class="divider-custom">
+                        <div class="divider-custom-line"></div>
+                        <div class="divider-custom-icon"><i class="fas fa-star"></i></div>
+                        <div class="divider-custom-line"></div>
+                    </div>
+                    <div class="text-center mt-4">
+
+                        <a  th:href="@{/AlumnoJPA/formSP/{idalumno}(idalumno=${0})}" class="btn btn-primary"><i class="bi bi-plus-circle"></i> Agregar</a>
+                    </div></br>
+                    <div class="row justify-content-center">
+                        <div class="col-lg-8 col-xl-7">
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th scope="col">ELIMINAR</th>
+                                        <th scope="col">ID ALUMNO</th>
+                                        <th scope="col">NOMBRE</th>
+                                        <th scope="col">APELLIDO PATERNO</th>
+                                        <th scope="col">APELLIDO MATERNO</th>
+                                        <th scope="col">EDITAR</th>
+                                        <th scope="col">AgregarMateria</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr th:each="alumno : ${alumnos}">
+                                        <td>
+                                            <a th:href="@{/AlumnoJPA/EliminarAlumnoSP/{idalumno}(idalumno=${alumno.idalumno})}" class="btn btn-danger">
+                                                <i class="bi bi-trash3"></i>                           
+                                        </td>
+                                        <td th:text="${alumno.idalumno}"></td>
+                                        <td th:text="${alumno.nombre}"></td>
+                                        <td th:text="${alumno.apellidopaterno}"></td>                                        
+                                        <td th:text="${alumno.apellidomaterno}"></td>                                        
+                                        <td>
+                                            <a th:href="@{/AlumnoJPA/formSP/{idalumno}(idalumno=${alumno.idalumno})}" class="btn btn-warning">
+                                                <i class="bi bi-pencil-square"></i>                                
+                                        </td>
+                                        <td>
+                                            <a href="#" class="btn btn-success"
+                                               th:attr="onclick='mostrarModalReserva(\'__${alumno.idalumno}__\')'"
+                                               data-bs-toggle="modal" data-bs-target="#exampleModalCenter">Materia</a>
+                                        </td>
+                                    </tr>    
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal fade" id="exampleModalCenter" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered" role="document">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLongTitle">Agregar Materia</h5>
+                                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+                            <div class="modal-body" id="modalContent">
+                                <p><strong>Id del Alumno:</strong> <span id="idalumno"></span></p>
+
+
+                                <div class="input-group mb-3"> 
+                                    <span class="input-group-text" id="basic-addon1"><i class="bi bi-journal-bookmark-fill"></i></span>
+                                    <select th:if="${materias == null}" class="form-select" aria-label="Default select example" name="Materia" id="idmateria" th:field="*{materia.idmateria}">
+                                        <option value="0">Seleccione una materia</option>
+                                    </select>
+                                    <select th:unless="${materias == null}" class="form-select" aria-label="Default select example" name="Materia" id="idmateria" th:field="*{materia.idmateria}">
+                                        <option th:each="materia : ${materias}" th:value="${materia.idmateria}" th:text="${materia.nombre}"></option>
+                                    </select>
+
+                                </div>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                <button id="idAgregar" class="btn btn-primary" onclick="reservarVuelo()">Registrar</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </header>  
+</html>
+<script>
+
+                                    function mostrarModalReserva(numeroVuelo) {
+                                        $("#idalumno").text(numeroVuelo);
+
+                                        $("#exampleModalCenter").modal('show');
+                                    }
+
+
+                                    function reservarVuelo() {
+                                        var idalumno = $("#idalumno").text();
+                                        var idmateria = $("#idmateria").val();
+                                        var reservacionvuelo = {
+                                            alumno: {
+                                                idalumno: idalumno
+                                            },
+                                            materia: {
+                                                idmateria: idmateria
+                                            }
+                                        };
+                                        $.ajax({
+                                            url: "http://localhost:8080/AlumnoMateriaApi/AgregarSP",
+                                            type: "POST",
+                                            contentType: "application/json",
+                                            dataType: "json",
+                                            data: JSON.stringify(reservacionvuelo),
+                                            success: function (data, textStatus, xhr) {
+                                                if (xhr.status === 200) {
+                                                    alert(' Registro Exitoso: ' + data.mensaje);
+                                                } else {
+                                                    alert('Error en el registro ' + data.mensaje);
+                                                }
+                                                
+                                                location.reload();
+                                            },
+                                            error: function (error) {
+                                                alert('Error en el registro: ' + error.responseText);
+                                                
+                                                location.reload();
+                                            }
+                                        });
+                                    }
+</script>

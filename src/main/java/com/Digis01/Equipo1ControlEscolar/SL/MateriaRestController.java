@@ -27,13 +27,13 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("MateriaApi")
 public class MateriaRestController {
+
     ServiceMateria serviceMateria;
 
     public MateriaRestController(ServiceMateria serviceMateria) {
         this.serviceMateria = serviceMateria;
     }
-    
-    
+
     @GetMapping("/Listado")
     public ResponseEntity<List<Materia>> Listado() {
         List<Materia> materias = serviceMateria.findAll();
@@ -46,10 +46,10 @@ public class MateriaRestController {
 
     @GetMapping("/Add&Update/{id}")
     public ResponseEntity<Optional> obtenerAlumnoPorId(@PathVariable Long id) {
-         Optional<Materia> materia = serviceMateria.findById(id);
+        Optional<Materia> materia = serviceMateria.findById(id);
 
         if (!materia.isPresent()) {
-            
+
             materia = Optional.empty();
             return new ResponseEntity<>(materia, HttpStatus.OK);
         } else {
@@ -82,8 +82,42 @@ public class MateriaRestController {
     public Map<String, String> Delete(@PathVariable Long id) {
         Map<String, String> map = new HashMap<>();
         serviceMateria.deleteById(id);
-        String ids=id.toString();
+        String ids = id.toString();
         map.put("Se elimino la materia con el id: ", ids);
         return map;
     }
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////
+    @PostMapping("/AgregarSP")
+    public void agregarAlumno(@RequestBody Materia materia) {
+        int idmateria = materia.getIdmateria();
+        String nombre = materia.getNombre();
+        double costo = materia.getCosto();
+
+        if (idmateria == 0) {
+            serviceMateria.MateriaAdd(nombre, costo);
+            
+        } else {
+            serviceMateria.MateriaUpdate(idmateria, nombre, costo);
+           
+        }
+    }
+
+    @GetMapping("/ListadoSP")
+    public ResponseEntity<List<Materia>> ListadoSP() {
+        List<Materia> alumnos = serviceMateria.findAll();
+        if (alumnos == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(alumnos, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/eliminaSP/{id}")
+    public void DeleteSP(@PathVariable int id) {
+
+        serviceMateria.MateriaDelete(id);
+       
+    }
+
 }

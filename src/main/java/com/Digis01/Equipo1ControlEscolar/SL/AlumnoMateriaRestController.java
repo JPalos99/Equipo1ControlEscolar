@@ -74,5 +74,36 @@ public class AlumnoMateriaRestController {
         map.put("Se elimino  con el id: ", ids);
         return map;
     }
+/////////////////////////////////////////////////////////////////////////////////////////////
+    
+    @PostMapping("/AgregarSP")
+    public void agregarAlumno(@RequestBody AlumnoMateria alumnoMateria) {
+        int idAlumnoMateria = alumnoMateria.getIdalumnomateria();
+        int idMateria= alumnoMateria.getMateria().getIdmateria();
+        int idAlumno= alumnoMateria.getAlumno().getIdalumno();
+        if (idAlumnoMateria == 0) {
+            serviceAlumnoMateria.AlumMatAdd(idAlumno, idMateria);
+           
+        } else {
+            serviceAlumnoMateria.AlumMatUpdate(idAlumnoMateria, idAlumno, idMateria);
+          
+        }
+    }
 
+    @GetMapping("/ListadoSP")
+    public ResponseEntity<List<AlumnoMateria>> ListadoSP() {
+        List<AlumnoMateria> alumnos = serviceAlumnoMateria.findAll();
+        if (alumnos == null) {
+            return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
+        } else {
+            return new ResponseEntity<>(alumnos, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/eliminaSP/{id}")
+    public void DeleteSP(@PathVariable int id) {
+        serviceAlumnoMateria.MateriaDelete(id);
+        
+    }
+   
 }
